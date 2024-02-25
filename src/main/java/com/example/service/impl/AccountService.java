@@ -10,9 +10,8 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public boolean Login(String username, String password) {
+    public AccountModel Login(String username, String password) {
         AccountModel accountModel = accountDAO.findOneByUsernameAndPassword(username, password);
-        if (accountModel != null) return true;
-        return false;
+        return accountModel;
     }
 }

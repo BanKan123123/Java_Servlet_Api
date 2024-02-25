@@ -1,5 +1,7 @@
 package com.example.service;
 
+import com.example.model.AccountModel;
+
 public interface IAccountService {
-    boolean Login (String username, String password);
+    AccountModel Login (String username, String password);
 }
