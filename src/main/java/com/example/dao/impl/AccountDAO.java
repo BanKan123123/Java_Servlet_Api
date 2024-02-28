@@ -1,46 +1,39 @@
 package com.example.dao.impl;
 
 import com.example.dao.IAccount;
+
+import com.example.mapper.AccountMapper;
 import com.example.model.AccountModel;
-import com.example.model.BookModel;
-import com.example.utils.ConfigDB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
+import java.util.List;
 
-public class AccountDAO implements IAccount {
-
-    public AccountDAO(){}
-
+public class AccountDAO extends AbstractDAO<AccountModel> implements IAccount {
     @Override
-    public AccountModel findOneByUsernameAndPassword(String username, String password) {
-        AccountModel accountModel = new AccountModel();
-        String sql = "Select * from account where account.username = '" + username + "' and password = '" + password + "'";
-        try (Connection conn = ConfigDB.provideConnection()) {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet resultSet = ps.executeQuery();
-
-            while (resultSet.next()) {
-                accountModel = this.setFieldAccount(resultSet);
-            }
-
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return accountModel;
+    public List<AccountModel> findAllAccount() {
+        String sql = "SELECT * FROM account";
+        return query(sql, new AccountMapper());
     }
 
-    public AccountModel setFieldAccount (ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt("id");
-        String username = resultSet.getString("username");
-        String password = resultSet.getString("password");
-        String email = resultSet.getString("email");
-        int role = resultSet.getInt("role");
-        Date createdAt = resultSet.getDate("created_at");
-        Date updatedAt = resultSet.getDate("updated_at");
-        return new AccountModel(id, username, password, email, role, createdAt, updatedAt);
+    @Override
+    public AccountModel findOneAccount(String username) {
+        String sql = "SELECT * FROM account WHERE `username` = ?";
+
+        if (!query(sql, new AccountMapper(), username).isEmpty()) {
+            return query(sql, new AccountMapper(), username).get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public AccountModel signInAccount(String username, String password) {
+        String sql = "SELECT * FROM account WHERE `username` = ? AND `password` = ?";
+        return query(sql, new AccountMapper(), username, password).get(0);
+    }
+
+    @Override
+    public void registerAccount(AccountModel account) {
+        String sql = "INSERT INTO account (username, password, email, role) VALUE (? , ? , ? , 0)";
+        insert(sql, account.getUsername(), account.getPassword(), account.getEmail());
     }
 }
