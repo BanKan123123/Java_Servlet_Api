@@ -1,6 +1,7 @@
 package com.example.controller.web;
 
 import com.example.model.AccountModel;
+import com.example.service.IAccountService;
 import com.example.service.impl.AccountService;
 import com.example.utils.FormUtil;
 import com.example.utils.HttpUtil;
@@ -20,12 +21,17 @@ import java.util.ResourceBundle;
 @WebServlet(urlPatterns = {"/home", "/login"})
 public class HomeController extends HttpServlet {
 
-    private AccountService accountService = new AccountService();
-
+    private IAccountService accountService = new AccountService();
+    private static String strMessage = "Username or password is invalid";
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if(action != null && action.equals("login")) {
+            String status = req.getParameter("status");
+            if(status != null && status.equals("false")) {
+                req.setAttribute("message", strMessage);
+                req.setAttribute("alert", "danger");
+            }
             RequestDispatcher requestDispatcher = req.getRequestDispatcher("/views/web/login.jsp");
             requestDispatcher.forward(req, resp);
         } else {
@@ -45,7 +51,7 @@ public class HomeController extends HttpServlet {
             if(acc.getUsername() != null && acc.getPassword() != null) {
                 resp.sendRedirect(req.getContextPath()+"/home");
             } else {
-                resp.sendRedirect(req.getContextPath()+"/login?action=login&message=username_password_invalid&alert=danger");
+                resp.sendRedirect(req.getContextPath()+"/login?action=login&status=false");
             }
         }
     }
