@@ -1,7 +1,6 @@
 package com.example.service;
 
 import com.example.model.AccountModel;
-
 import java.util.List;
 
 public interface IAccountService {
@@ -10,5 +9,4 @@ public interface IAccountService {
     AccountModel findOneAccount (String username);
     AccountModel login (String username, String password);
     AccountModel save (AccountModel accountModel);
-
 }

@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountService implements IAccountService {
-
+    public AccountService() {
+    }
     private final AccountDAO accountDAO = new AccountDAO();
 
     @Override

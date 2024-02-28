@@ -1,8 +1,11 @@
 package com.example.dao;
 
 import com.example.model.AccountModel;
-
 import java.util.List;
+
+public interface IAccount {
+    AccountModel findOneByUsernameAndPassword(String username, String password);
+
 
 public interface IAccount {
 
@@ -13,6 +16,5 @@ public interface IAccount {
     AccountModel signInAccount(String username, String password);
 
     void registerAccount(AccountModel account);
-
 
 }
